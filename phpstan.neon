@@ -1,0 +1,24 @@
+parameters:
+  level: 8
+  paths:
+    - src/
+    - app/config
+    - app/Resources
+  excludes_analyse:
+    - %currentWorkingDirectory%/src/Doctrine/Migrations/*
+    - %currentWorkingDirectory%/src/Command/DoctrineFixturesLoadCommand*
+    - %currentWorkingDirectory%/src/Swagger/SwaggerDecorator*
+    - %currentWorkingDirectory%/src/Command*
+    - %currentWorkingDirectory%/tests*
+    - %currentWorkingDirectory%/src/Kernel.php
+    - %currentWorkingDirectory%/src/Twig/SourceCodeExtension.php
+    - vendor/*
+    - var/*
+  symfony:
+    container_xml_path: ./var/cache/dev/srcApp_KernelDevDebugContainer.xml
+  ignoreErrors:
+  checkGenericClassInNonGenericObjectType: false
+  checkMissingIterableValueType: false
+includes:
+  - vendor/phpstan/phpstan-symfony/extension.neon
+  - vendor/phpstan/phpstan-doctrine/extension.neon

@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - "1110:80"
+      - "1055:25"
+
+  yarn:
+    build: docker/node
+    volumes:
+      - ./:/home/node/app
+
+  mysql:
+    image: mysql:8.0
+    restart: "no"
+    command: "--default-authentication-plugin=mysql_native_password --innodb-use-native-aio=0"
+    ports:
+      - 3346:3306
+    healthcheck:
+      test: "/etc/init.d/mysql status"
+      timeout: 1s
+      retries: 60
+    volumes:
+      - "./docker/db/mysql:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: p@ssword
+      MYSQL_DATABASE: symfony_demo
+
+  php:
+    image: thecodingmachine/php:7.4-v4-apache
+    tty: true
+    links:
+      - mysql
+    ports:
+      - "8080:80"
+    environment:
+      APACHE_DOCUMENT_ROOT: public
+      PHP_EXTENSION_XDEBUG: 1
+      PHP_EXTENSION_XML: 1
+      PHP_EXTENSION_INTL: 1
+      PHP_EXTENSION_SQLITE3: 1
+      PHP_EXTENSION_PDO_SQLITE: 1
+    volumes:
+      - "./docker/apache/dev.conf:/etc/apache2/sites-enabled/000-default.conf"
+      - "./:/var/www/html"
+    depends_on:
+      - mysql

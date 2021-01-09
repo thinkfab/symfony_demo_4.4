@@ -1,0 +1,26 @@
+grumphp:
+  git_hook_variables:
+    EXEC_GRUMPHP_COMMAND: 'docker-compose run --rm php '
+  ascii:
+    failed: ~
+    succeeded: ~
+  ignore_unstaged_changes: false
+  tasks:
+    composer: ~
+    phplint: ~
+    phpcs:
+      ignore_patterns:
+        - '*Test.php'
+        - '*/Migrations/*'
+    phpstan: ~
+    yamllint:
+      parse_constant: true
+    shell:
+      scripts:
+        - ["-c", "bin/console doctrine:schema:validate"]
+    git_commit_message:
+      allow_empty_message: false
+      max_subject_width: 72
+      matchers:
+        'Must contain issue number or technical or merge branch (ex. task #3939: commit_message | technical: commit_message| Merge branch commit_message)': '/^(((task [0-9]+|technical)\: )|(Merge branch )).+/'
+      enforce_capitalized_subject: false

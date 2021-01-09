@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ruleset name="ThinkFabStandard">
+    <description>Permet de mettre un _ devant les noms de méthodes ex: _ajax</description>
+    <rule ref="PSR12">
+        <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+    </rule>
+    <rule ref="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing"/>
+    <exclude-pattern type="relative-root">*/html/var/*</exclude-pattern>
+    <exclude-pattern type="relative-root">*/html/bin/*</exclude-pattern>
+    <exclude-pattern type="relative-root">*/html/node_modules/*</exclude-pattern>
+    <exclude-pattern type="relative-root">*/html/vendor/*</exclude-pattern>
+    <exclude-pattern type="relative-root">*/Doctrine/Migrations/*</exclude-pattern>
+    <exclude-pattern type="relative-root">*/var/www/html/config/bundles.php*</exclude-pattern>
+    <exclude-pattern type="relative-root">*/var/www/html/src/Command/DoctrineFixturesLoadCommand*</exclude-pattern>
+</ruleset>
