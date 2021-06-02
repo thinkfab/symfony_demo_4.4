@@ -4,7 +4,8 @@
 \n
 \e[32m===================================================================\n
 \n
-Server is running on http://localhost:8080.\n
+App is running on http://localhost:8080.\n
+Mail is running on http://localhost:1110. \n
 \n
 Use "make stop" to stop it.\n
 \n
