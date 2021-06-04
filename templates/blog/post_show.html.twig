@@ -52,6 +52,11 @@
             </h4>
             <div class="col-sm-9">
                 {{ comment.content|md2html }}
+                <form action="{{ path('blog_post', {'slug': post.slug}) }}">
+                    <label for="commentAnswer">Votre réponse:</label>
+                    <input type="text" id="commentAnswer" name="commentAnswer">
+                    <input type="submit" value="Envoyer">
+                </form>
             </div>
         </div>
     {% else %}
