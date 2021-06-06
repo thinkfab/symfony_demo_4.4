@@ -75,6 +75,11 @@ class Comment
      */
     private $author;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $parent_id;
+
     public function __construct()
     {
         $this->publishedAt = new \DateTime();
@@ -133,5 +138,17 @@ class Comment
     public function setPost(Post $post): void
     {
         $this->post = $post;
+    }
+
+    public function getParentId(): ?int
+    {
+        return $this->parent_id;
+    }
+
+    public function setParentId(?int $parent_id): self
+    {
+        $this->parent_id = $parent_id;
+
+        return $this;
     }
 }

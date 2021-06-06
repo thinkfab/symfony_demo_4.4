@@ -41,6 +41,7 @@
     </h3>
 
     {% for comment in post.comments %}
+        {% if not comment.parentId %}
         <div class="row post-comment">
             <a name="comment_{{ comment.id }}"></a>
             <h4 class="col-sm-3">
@@ -52,13 +53,27 @@
             </h4>
             <div class="col-sm-9">
                 {{ comment.content|md2html }}
-                <form action="{{ path('blog_post', {'slug': post.slug}) }}">
-                    <label for="commentAnswer">Votre réponse:</label>
+                <form action="{{ path('blog_post', {'slug': post.slug}, {'id': post.id}) }}">
+                    <label for="commentAnswer">Répondre:</label>
                     <input type="text" id="commentAnswer" name="commentAnswer">
+                    <input type="hidden" name="commentId" value="{{ comment.id }}">
+                    <input type="hidden" name="postId" value="{{ post.id }}">
                     <input type="submit" value="Envoyer">
                 </form>
             </div>
         </div>
+        {% else%}
+        <div class="bg-danger">
+            <h4 class="">
+                <strong>{{ comment.author.fullName }}</strong> {{ 'post.commented_on'|trans }}
+                {# it's not mandatory to set the timezone in localizeddate(). This is done to
+                avoid errors when the 'intl' PHP extension is not available and the application
+                is forced to use the limited "intl polyfill", which only supports UTC and GMT #}
+                <strong>{{ comment.publishedAt|localizeddate('medium', 'short', null, 'UTC') }}</strong>
+            </h4>
+            <p>{{ comment.content|md2html }}</p>
+        </div>
+        {% endif %}
     {% else %}
         <div class="post-comment">
             <p>{{ 'post.no_comments'|trans }}</p>

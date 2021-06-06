@@ -19,6 +19,7 @@ use App\Events\CommentCreatedEvent;
 use App\Form\CommentType;
 use App\Repository\PostRepository;
 use App\Repository\TagRepository;
+use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -27,6 +28,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Controller used to manage blog contents in the public part of the site.
@@ -82,24 +84,43 @@ class BlogController extends AbstractController
 
     /**
      * @Route("/posts/{slug}", methods={"GET"}, name="blog_post")
-     *
      * NOTE: The $post controller argument is automatically injected by Symfony
      * after performing a database query looking for a Post with the 'slug'
      * value given in the route.
      * See https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
      * @return Response
      */
-    public function postShow(Request $request, $slug): Response
+    public function postShow(Request $request, $slug, Post $post): Response
     {
         $slug = $slug;
-
+    
         // Get the requested  page
         $post = $this->getDoctrine()->GetRepository(Post::class)->findOneBy(["slug" => $slug]);
-        
+
         //Get data from the input of the comment answer
         $getCommentAnswer = $request->query->get('commentAnswer');
-        var_dump($getCommentAnswer);
 
+        //Get the comment id
+        $commentId = $request->query->get('commentId');   
+
+        if($user = $this->getUser())
+        {
+            if(!empty($getCommentAnswer))
+            {
+                $comment = new Comment();
+                $comment->setAuthor($user);
+                $comment->setContent($getCommentAnswer);
+                $comment->setParentId($commentId);
+                $comment->setPost($post);
+
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($comment);
+                $em->flush();
+                return $this->redirectToRoute('blog_index');
+
+            }     
+        }
         return $this->render('blog/post_show.html.twig', ['post' => $post]);
     }
 
