@@ -13,11 +13,13 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Entity\Tag;
 use App\Entity\User;
 use App\Events\CommentCreatedEvent;
 use App\Form\CommentType;
 use App\Repository\PostRepository;
 use App\Repository\TagRepository;
+use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -26,6 +28,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Controller used to manage blog contents in the public part of the site.
@@ -48,22 +51,27 @@ class BlogController extends AbstractController
      * See https://symfony.com/doc/current/quick_tour/the_controller.html#using-formats
      * @param Request $request
      * @param int $page
-     * @param string $_format
-     * @param PostRepository $posts
-     * @param TagRepository $tags
+     * @param string $_forma
      * @return Response
      */
     public function index(
         Request $request,
         int $page,
-        string $_format,
-        PostRepository $posts,
-        TagRepository $tags
+        string $_format
     ): Response {
+
         $tag = null;
+
+        $em = $this->getDoctrine()->getManager();
+
+        $tags = $em->getRepository(Tag::class);
+
         if ($request->query->has('tag')) {
+
             $tag = $tags->findOneBy(['name' => $request->query->get('tag')]);
         }
+
+        $posts = $em->getRepository(Post::class);
         $latestPosts = $posts->findLatest($page, $tag);
 
         // Every template name also has two extensions that specify the format and
@@ -76,23 +84,43 @@ class BlogController extends AbstractController
 
     /**
      * @Route("/posts/{slug}", methods={"GET"}, name="blog_post")
-     *
      * NOTE: The $post controller argument is automatically injected by Symfony
      * after performing a database query looking for a Post with the 'slug'
      * value given in the route.
      * See https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
-     * @param Post $post
      * @return Response
      */
-    public function postShow(Post $post): Response
+    public function postShow(Request $request, $slug, Post $post): Response
     {
-        // Symfony's 'dump()' function is an improved version of PHP's 'var_dump()' but
-        // it's not available in the 'prod' environment to prevent leaking sensitive information.
-        // It can be used both in PHP files and Twig templates, but it requires to
-        // have enabled the DebugBundle. Uncomment the following line to see it in action:
-        //
-        // dump($post, $this->getUser(), new \DateTime());
+        $slug = $slug;
+    
+        // Get the requested  page
+        $post = $this->getDoctrine()->GetRepository(Post::class)->findOneBy(["slug" => $slug]);
 
+        //Get data from the input of the comment answer
+        $getCommentAnswer = $request->query->get('commentAnswer');
+
+        //Get the comment id
+        $commentId = $request->query->get('commentId');   
+
+        if($user = $this->getUser())
+        {
+            if(!empty($getCommentAnswer))
+            {
+                $comment = new Comment();
+                $comment->setAuthor($user);
+                $comment->setContent($getCommentAnswer);
+                $comment->setParentId($commentId);
+                $comment->setPost($post);
+
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($comment);
+                $em->flush();
+                return $this->redirectToRoute('blog_index');
+
+            }     
+        }
         return $this->render('blog/post_show.html.twig', ['post' => $post]);
     }
 
