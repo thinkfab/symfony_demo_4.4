@@ -12,7 +12,7 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:               # defines the scalar arguments once and apply them to any service defined/created in this file
-            $locales: '%app_locales%'
+            string $locales: '%app_locales%'
             $defaultLocale: '%locale%'
             $emailSender: '%app.notifications.email_sender%'
 

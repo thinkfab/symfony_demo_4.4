@@ -16,6 +16,7 @@ help: ## Display available commands
 # =====================================================================
 
 install: ## Install docker stack, assets and vendors
+	$(DOCKER_COMPOSE_DEV) pull
 	$(DOCKER_COMPOSE_DEV) build
 	$(MAKE) composer-install
 	$(MAKE) assets-install

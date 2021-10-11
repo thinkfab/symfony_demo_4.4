@@ -31,7 +31,7 @@ class AppExtension extends AbstractExtension
 {
     private Markdown $parser;
     private array $localeCodes;
-    private ?array $locales;
+    private ?array $locales = null;
 
     public function __construct(Markdown $parser, string $locales)
     {
