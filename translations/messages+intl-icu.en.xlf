@@ -246,6 +246,10 @@
                 <source>label.tags</source>
                 <target>Tags</target>
             </trans-unit>
+            <trans-unit id="label.subtitle">
+                <source>label.subtitle</source>
+                <target>Subtitle</target>
+             </trans-unit>
             <trans-unit id="label.actions">
                 <source>label.actions</source>
                 <target>Actions</target>
