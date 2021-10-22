@@ -12,6 +12,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Entity;
 
 /**
  * @ORM\Entity()
@@ -22,6 +23,8 @@ use Doctrine\ORM\Mapping as ORM;
  * See https://symfony.com/doc/current/book/doctrine.html#creating-an-entity-class
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
+ *
+ * @Entity(repositoryClass="App\Repository\TagRepository")
  */
 class Tag implements \JsonSerializable
 {

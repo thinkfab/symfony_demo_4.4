@@ -26,6 +26,12 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @author Ryan Weaver <weaverryan@gmail.com>
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Yonel Ceruto <yonelceruto@gmail.com>
+ *
+ * @method Post|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Post|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Post[] findAll()
+ * @method Post[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
  */
 class PostRepository extends ServiceEntityRepository
 {
