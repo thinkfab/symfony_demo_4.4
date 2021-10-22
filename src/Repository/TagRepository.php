@@ -23,6 +23,8 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * See https://symfony.com/doc/current/doctrine/repository.html
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
+ *
+ * @method Tag|null findOneBy(array $criteria, array $orderBy = null)
  */
 class TagRepository extends ServiceEntityRepository
 {

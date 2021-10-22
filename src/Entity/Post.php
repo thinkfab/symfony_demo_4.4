@@ -122,7 +122,7 @@ class Post
     private $tags;
 
     /**
-     * @var string
+     * @var string|null $subtitle
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -237,6 +237,9 @@ class Post
         return $this->tags;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSubtitle(): ?string
     {
         return $this->subtitle;
