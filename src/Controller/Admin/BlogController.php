@@ -14,7 +14,7 @@ namespace App\Controller\Admin;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Form\PostType;
-use App\Repository\PostRepository;
+use App\Manager\PostManager;
 use App\Security\PostVoter;
 use App\Utils\Slugger;
 use RuntimeException;
@@ -56,12 +56,12 @@ class BlogController extends AbstractController
      *
      * @Route("/", methods={"GET"}, name="admin_index")
      * @Route("/", methods={"GET"}, name="admin_post_index")
-     * @param PostRepository $posts
+     * @param PostManager $postManager
      * @return Response
      */
-    public function index(PostRepository $posts): Response
+    public function index(PostManager $postManager): Response
     {
-        $authorPosts = $posts->findBy(['author' => $this->getUser()], ['publishedAt' => 'DESC']);
+        $authorPosts = $postManager->findByAuthor($this->getUser());
 
         return $this->render('admin/blog/index.html.twig', ['posts' => $authorPosts]);
     }

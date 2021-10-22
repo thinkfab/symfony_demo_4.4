@@ -16,8 +16,8 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\Events\CommentCreatedEvent;
 use App\Form\CommentType;
-use App\Repository\PostRepository;
-use App\Repository\TagRepository;
+use App\Manager\PostManager;
+use App\Manager\TagManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -49,22 +49,22 @@ class BlogController extends AbstractController
      * @param Request $request
      * @param int $page
      * @param string $_format
-     * @param PostRepository $posts
-     * @param TagRepository $tags
+     * @param PostManager $postManager
+     * @param TagManager $tagManager
      * @return Response
      */
     public function index(
         Request $request,
         int $page,
         string $_format,
-        PostRepository $posts,
-        TagRepository $tags
+        PostManager $postManager,
+        TagManager $tagManager
     ): Response {
         $tag = null;
         if ($request->query->has('tag')) {
-            $tag = $tags->findOneBy(['name' => $request->query->get('tag')]);
+            $tag = $tagManager->findTagByQuery($request->query->get('tag'));
         }
-        $latestPosts = $posts->findLatest($page, $tag);
+        $latestPosts = $postManager->findLatestPosts($page, $tag);
 
         // Every template name also has two extensions that specify the format and
         // engine for that template.
@@ -165,10 +165,10 @@ class BlogController extends AbstractController
     /**
      * @Route("/search", methods={"GET"}, name="blog_search")
      * @param Request $request
-     * @param PostRepository $posts
+     * @param PostManager $postManager
      * @return Response
      */
-    public function search(Request $request, PostRepository $posts): Response
+    public function search(Request $request, PostManager $postManager): Response
     {
         if (!$request->isXmlHttpRequest()) {
             return $this->render('blog/search.html.twig');
@@ -176,7 +176,7 @@ class BlogController extends AbstractController
 
         $query = $request->query->get('q', '');
         $limit = $request->query->get('l', 10);
-        $foundPosts = $posts->findBySearchQuery($query, $limit);
+        $foundPosts = $postManager->findBySearchQuery($query, $limit);
 
         $results = [];
         foreach ($foundPosts as $post) {
