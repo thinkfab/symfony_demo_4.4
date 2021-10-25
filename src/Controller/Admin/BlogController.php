@@ -14,7 +14,7 @@ namespace App\Controller\Admin;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Form\PostType;
-use App\Manager\PostManager;
+use App\Contract\Manager\PostManagerInterface;
 use App\Security\PostVoter;
 use App\Utils\Slugger;
 use RuntimeException;
@@ -56,10 +56,10 @@ class BlogController extends AbstractController
      *
      * @Route("/", methods={"GET"}, name="admin_index")
      * @Route("/", methods={"GET"}, name="admin_post_index")
-     * @param PostManager $postManager
+     * @param PostManagerInterface $postManager
      * @return Response
      */
-    public function index(PostManager $postManager): Response
+    public function index(PostManagerInterface $postManager): Response
     {
         $authorPosts = $postManager->findByAuthor($this->getUser());
 

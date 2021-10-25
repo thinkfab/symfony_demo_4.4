@@ -2,6 +2,7 @@
 
 namespace App\Manager;
 
+use App\Contract\Manager\PostManagerInterface;
 use App\Entity\Post;
 use App\Entity\Tag;
 use App\Pagination\Paginator;
@@ -9,7 +10,7 @@ use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 
-class PostManager
+class PostManager implements PostManagerInterface
 {
     /** @var EntityManagerInterface $entityManager */
     private EntityManagerInterface $entityManager;
@@ -35,10 +36,7 @@ class PostManager
     }
 
     /**
-     * @param int $page
-     * @param Tag|null $tag
-     *
-     * @return Paginator
+     * {@inheritDoc}
      */
     public function findLatestPosts(int $page, Tag $tag = null): Paginator
     {
@@ -46,10 +44,7 @@ class PostManager
     }
 
     /**
-     * @param string $query
-     * @param int $limit
-     *
-     * @return Post[]
+     * {@inheritDoc}
      */
     public function findBySearchQuery(string $query, int $limit): array
     {
@@ -57,12 +52,13 @@ class PostManager
     }
 
     /**
-     * @param object|null $user
-     *
-     * @return Post[]
+     * {@inheritDoc}
      */
     public function findByAuthor(?object $user): array
     {
-        return $this->repository->findBy(['author' => $user], ['publishedAt' => 'DESC']);
+        return $this->repository->findBy(
+            array('author' => $user),
+            array('publishedAt' => 'DESC')
+        );
     }
 }
